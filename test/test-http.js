@@ -63,4 +63,28 @@ describe('Blog Api', function () {
                 res.should.have.status(204);
             })
     })
+
+    it('Should edit a blog post by id', function () {
+        var updatePost = {
+            title: 'Hello edited post',
+            content: 'has been modified'
+        }
+        return chai.request(app)
+            .get('/blog-posts')
+            .then(function (res) {
+                updatePost.id = res.body[0].id;
+                updatePost.author = res.body[0].author;
+                updatePost.publishDate = res.body[0].publishDate;
+                return chai.request(app)
+                    .put(`/blog-posts/${updatePost.id}`)
+                    .send(updatePost);
+            }).then(function (res) {
+                res.should.have.status(200);
+                res.should.be.json;
+                res.should.be.a('object');
+                res.body.should.include.key('title', 'content', 'author', 'id', 'publishDate');
+                res.body.id.should.not.be.null;
+                res.body.should.deep.equal(Object.assign(updatePost, { id: res.body.id }));
+            })
+    })
 })
