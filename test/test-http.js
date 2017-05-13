@@ -33,12 +33,23 @@ describe('Blog Api', function () {
     })
 
     it('Should post new blog posts', function () {
-        let createNewBlogPost = { title: 'HelloTest', content: 'testing blog posts', author: 'Steve-o' }
+        let createNewBlogPost =
+            {
+                title: 'HelloTest',
+                content: 'testing blog posts',
+                author: 'Steve-o',
+                publishDate: '10/25/2017'
+            }
         return chai.request(app)
             .post('/blog-posts')
             .send(createNewBlogPost)
             .then(function (res) {
                 res.should.have.status(201);
+                res.should.be.json;
+                res.should.be.a('object');
+                res.body.should.include.key('title', 'content', 'author', 'id', 'publishDate');
+                res.body.id.should.not.be.null;
+                res.body.should.deep.equal(Object.assign(createNewBlogPost, { id: res.body.id }));
             })
     })
 })
