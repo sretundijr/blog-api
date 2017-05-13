@@ -52,4 +52,15 @@ describe('Blog Api', function () {
                 res.body.should.deep.equal(Object.assign(createNewBlogPost, { id: res.body.id }));
             })
     })
+
+    it('Should delete a blog post by id', function () {
+        return chai.request(app)
+            .get('/blog-posts')
+            .then(function (res) {
+                return chai.request(app)
+                    .delete(`/blog-posts/${res.body[0].id}`);
+            }).then(function (res) {
+                res.should.have.status(204);
+            })
+    })
 })
